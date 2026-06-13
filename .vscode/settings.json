@@ -4,5 +4,6 @@
         "${workspaceFolder}\\backend"
     ],
     "python.terminal.useEnvFile": true,
-    "python.envFile": "${workspaceFolder}\\backend\\.env"
+    "python.envFile": "${workspaceFolder}\\backend\\.env",
+    "git.ignoreLimitWarning": true
 }

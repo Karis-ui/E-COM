@@ -18,11 +18,17 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Import your models
+from app.config import settings
 from app.database.postgres import Base
 from app.models.user import User, UserProfile
-from app.models.otp import OTPCode
+from app.models.orders import Order
+from app.models.otp import OTP
+from app.models.rider import Rider
+from app.models.delivery import Delivery
+from app.models.coupon import Coupon, CouponUsage
 
 target_metadata = Base.metadata
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""

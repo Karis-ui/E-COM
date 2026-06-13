@@ -1,3 +1,6 @@
+from app.api.v1 import cart
+from app.services.loyalty_service import LoyaltyService
+from app.services.coupon_service import CouponService
 from fastapi import APIRouter,Depends,HTTPException,Request,Cookie,Response
 from app.services.cart_service import CartService
 from app.services.product_service import ProductService
@@ -18,6 +21,8 @@ router = APIRouter(prefix="/orders",tags=["orders"])
 class CheckoutRequest(BaseModel):
     deliver_details:dict
     payment_method:str
+    coupon_code:Optional[str] = None
+    use_loyalty_points:Optional[bool] = False
 
 class MPesaCallbackRequest(BaseModel):
     Body:dict
@@ -36,6 +41,17 @@ async def create_order(request:CheckoutRequest,current_user:dict=Depends(get_cur
         payment_method=request.payment_method,
         product_service=product_service
     )
+    if request.coupon_code:
+        coupon_check = await CouponService.validate_coupon(
+            db,request.coupon_code,current_user["id"],cart["subtotal"],cart["items"]
+        )
+        if coupon_check["success"]:
+            discount = coupon_check["discount"]
+    
+    if request.use_loyalty_points:
+        points = await LoyaltyService.get_user_points(db,current_user["id"])
+        max_points_value = points * 1
+        points_to_use = min(max_points_value,cart["subtotal"] * 0.2)
     if request.payment_method == "mpesa":
         mpesa_service = MpesaService()
         mpesa_response = await mpesa_service.stk_push(

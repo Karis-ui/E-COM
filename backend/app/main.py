@@ -8,6 +8,8 @@ from app.database.mongodb import connect_to_mongo,close_mongo_connection
 from app.database.redis import connect_redis,close_redis
 from app.api.v1.admin import categories as admin_categories,brands as admin_brands,products as admin_products
 from app.api.v1 import products,cart,checkout,orders
+from app.api.v1.customer import addresses,reviews,dashboard
+from app.api.v1.admin import dashboard,orders,products,coupon,settings as admin_settings
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
@@ -74,3 +76,11 @@ app.include_router(products.router,prefix="/api/v1/products",tags=["Products"])
 app.include_router(cart.router,prefix="/api/v1/cart",tags=["Cart"])
 app.include_router(checkout.router,prefix="/api/v1/checkout",tags=["Checkout"])
 app.include_router(orders.router,prefix="/api/v1/orders",tags=["Orders"])
+app.include_router(addresses.router,prefix="/api/v1/customer/addresses",tags=["Customer - Addresses"])
+app.include_router(reviews.router,prefix="/api/v1/customer/reviews",tags=["Customer - Reviews"])
+app.include_router(dashboard.router,prefix="/api/v1/customer/dashboard",tags=["Customer - Dashboard"])
+app.include_router(dashboard.router,prefix="/api/v1/admin/dashboard",tags=["Admin - Dashboard"])
+app.include_router(orders.router,prefix="/api/v1/admin/orders",tags=["Admin - Orders"])
+app.include_router(products.router,prefix="/api/v1/admin/products",tags=["Admin - Products"])
+app.include_router(coupon.router,prefix="/api/v1/admin/coupon",tags=["Admin - Coupon"])
+app.include_router(admin_settings.router,prefix="/api/v1/admin/settings",tags=["Admin - Settings"])

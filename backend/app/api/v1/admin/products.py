@@ -1,7 +1,11 @@
 from fastapi import APIRouter,Depends,HTTPException,status
+from fastapi.responses import StreamingResponse
 from app.services.product_service import ProductService
 from app.database.mongodb import get_mongo_db
 from app.core.security import get_current_user
+import io
+import csv
+from datetime import datetime
 
 router = APIRouter(prefix="/admin/products",tags=["Admin - Products"])
 
@@ -51,3 +55,57 @@ async def delete_product(product_id:str,current_user = Depends(get_current_user)
     if not result:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Product not found")
     return {"message":"Product deleted successfully"}
+
+@router.get("/export")
+async def export_products(format: str="csv",current_user: dict=Depends(get_current_user),service:ProductService=Depends(get_product_service),mongo_db=Depends(get_mongo_db)):
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403,detail="Admin access required")
+    all_products = []
+    page = 1
+    limit = 100
+    
+    while True:
+        result = await service.list_products(limit=limit,page=page)
+        if not result['products']:
+            break
+        all_products.extend(result['products'])
+        if len(result['products']) < limit:
+            break
+        page += 1
+    
+    if format == "csv":
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow([
+            "SKU", "Name", "Brand", "Category", "Regular Price (KSh)", 
+            "Sale Price (KSh)", "Stock Quantity", "Low Stock Threshold",
+            "Status", "Featured", "New", "Created At", "Description"
+        ])
+        for product in all_products:
+            writer.writerow([
+                product.get("sku", ""),
+                product.get("name", ""),
+                product.get("brand", ""),
+                product.get("category_name", ""),
+                product.get("regular_price", ""),
+                product.get("sale_price", ""),
+                product.get("stock_quantity", ""),
+                product.get("low_stock_threshold", 5),
+                "Active" if product.get("is_active") else "Inactive",
+                "Yes" if product.get("is_featured") else "No",
+                "Yes" if product.get("is_new") else "No",
+                product.get("created_at", ""),
+                product.get("description", "")[:500]
+            ])
+        output.seek(0)
+        timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+        filename = f"products_export_{timestamp}.csv"
+        return StreamingResponse(
+            iter([output.getvalue()]),
+            media_type='text/csv',
+            headers={'Content-Disposition': f"attachment; filename={filename}"}
+        )
+    elif format == 'excel':
+        raise HTTPException(status_code=400,detail="Export unavailable")
+    else:
+        raise HTTPException(status_code=400,detail="Invalid format.Use 'csv'")

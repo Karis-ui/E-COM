@@ -1,6 +1,9 @@
 from datetime import datetime,timedelta
 from typing import Optional
 from jose import jwt,JWTError
+from app.services.coupon_service import CouponService
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.database.postgres import get_db
 from passlib.context import CryptContext
 from fastapi import Depends,HTTPException,status
 from fastapi.security import HTTPBearer,HTTPAuthorizationCredentials
@@ -65,3 +68,6 @@ async def get_current_user(token: HTTPAuthorizationCredentials = Depends(securit
     except JWTError:
         raise credentials_exception
     return user_id
+
+async def get_coupon_service(db:AsyncSession = Depends(get_db)) -> CouponService:
+    return CouponService(db)

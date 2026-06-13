@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,Boolean,DateTime,ForeignKey
+from sqlalchemy import Column,Integer,String,Boolean,DateTime,ForeignKey,Float
 from app.database.postgres import Base
 from sqlalchemy.sql import func
 
@@ -25,4 +25,3 @@ class Rider(Base):
     hired_at = Column(DateTime,default=func.now())
     created_at = Column(DateTime,default=func.now())
     updated_at = Column(DateTime,default=func.now(),onupdate=func.now())
-    orders = relationship("Order",back_populates="rider")

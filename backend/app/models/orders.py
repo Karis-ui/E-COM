@@ -1,11 +1,10 @@
 from cryptography.utils import Enum
-from dns import enum
 from sqlalchemy import Column,Integer,String,DateTime,Float,JSON,ForeignKey
 from sqlalchemy.orm import relationship
 from app.database.postgres import Base
 from datetime import datetime
 
-class OrderStatus(str,enum.Enum):
+class OrderStatus(str,Enum):
     PENDING = "pending"
     PROCESSING = "processing"
     PACKED = "packed"
@@ -21,7 +20,7 @@ class PaymentStatus(str,Enum):
     FAILED = "failed"
     REFUNDED = "refunded"
 
-class PaymentMethod(str,enum.Enum):
+class PaymentMethod(str,Enum):
     CASH = "cash"
     MPESA = "mpesa"
     VISA = "visa"

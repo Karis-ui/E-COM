@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/electroshop"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/K.Tech Electronics and Industries"
     SECRET_KEY: str
     HOST: str = "[IP_ADDRESS]"
     PORT: int = 8000
@@ -15,10 +15,10 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
-    POSTGRES_DB: str = "electroshop"
+    POSTGRES_DB: str = "K.Tech Electronics and Industries"
 
     MONGODB_URI: str = "mongodb://localhost:27017"
-    MONGODB_DB: str = "electroshop"
+    MONGODB_DB: str = "K.Tech Electronics and Industries"
 
     REDIS_URL: str = "redis://localhost:6379/0"
 
@@ -49,5 +49,17 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore"
     )
+
+    @property
+    def is_production(self) -> bool:
+        return self.ENVIRONMENT == "production"
+
+    @property
+    def is_development(self) -> bool:
+        return self.ENVIRONMENT == "development"
+
+    @property
+    def is_testing(self) -> bool:
+        return self.ENVIRONMENT == "testing"
 
 settings = Settings()
