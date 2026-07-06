@@ -11,7 +11,7 @@ from typing import List,Optional
 from sqlalchemy import select,func,and_,extract
 from datetime import datetime,timedelta
 
-router = APIRouter("/admin/orders",tags=["Admin - Orders"])
+router = APIRouter(prefix="/admin/orders",tags=["Admin - Orders"])
 
 @router.get("/")
 async def get_orders(

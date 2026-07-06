@@ -6,7 +6,7 @@ from app.models.address import CustomerAddress
 from app.database.postgres import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
  
-router = APIRouter("/customer/addresses",tags=["Customer Addresses"])
+router = APIRouter(prefix="/customer/addresses",tags=["Customer Addresses"])
 
 @router.post("/", response_model=AddressResponse,status_code=status.HTTP_201_CREATED)
 async def create_address(address: AddressCreate, current_user: dict = Depends(get_current_user), db: AsyncSession = Depends(get_db)):

@@ -1,75 +1,77 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
+    Settings,
     Save,
+    RefreshCw,
+    AlertCircle,
+    CheckCircle,
+    X,
+    ChevronLeft,
     Truck,
-    DollarSign,
-    Mail,
-    Shield,
-    Globe,
-    Smartphone,
-    Building2,
+    CreditCard,
     Bell,
     Lock,
-    Facebook,
-    Twitter,
-    Instagram,
-    Youtube,
-    Search,
-    Image,
-    Loader2,
-    CreditCard,
-    ChevronRight
+    Globe,
+    Home,
+    DollarSign,
+    Users,
+    Package,
+    ShoppingBag,
+    Mail,
+    Phone,
+    MapPin
 } from 'lucide-react';
 import { adminAPI } from '../../api/admin';
 import toast from 'react-hot-toast';
 
 const AdminSettingsPage = () => {
+    const location = useLocation();
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
     const [settings, setSettings] = useState({
-        delivery: {
-            nairobi: 300,
-            other: 500,
-            free_threshold: 10000
+        general: {
+            shop_name: 'K-TECH Electronics',
+            shop_email: 'info@ktech.co.ke',
+            shop_phone: '+254 700 123 456',
+            shop_address: 'Nairobi, Kenya',
+            shop_currency: 'KES',
+            timezone: 'Africa/Nairobi'
         },
-        shop: {
-            name: 'K-TECH Electronics',
-            email: 'info@ktech.co.ke',
-            phone: '+254 700 123 456',
-            address: 'Nairobi, Kenya',
-            logo: '',
-            favicon: ''
+        payment: {
+            mpesa_enabled: true,
+            card_enabled: true,
+            cash_enabled: true,
+            mpesa_shortcode: '174379',
+            payment_gateway: 'pesapal'
+        },
+        delivery: {
+            nairobi_fee: 300,
+            other_counties_fee: 500,
+            free_delivery_threshold: 10000,
+            delivery_time: '2-3 business days'
         },
         notifications: {
             order_notifications: true,
             low_stock_notifications: true,
             customer_review_notifications: true,
-            notification_email: ''
-        },
-        payment: {
-            mpesa_enabled: true,
-            card_enabled: true,
-            cash_enabled: true
+            notification_email: 'admin@ktech.co.ke'
         },
         security: {
             two_factor_auth: false,
-            session_timeout: 60
+            session_timeout: 60,
+            require_strong_password: true
         },
         seo: {
-            meta_title: '',
-            meta_description: '',
-            meta_keywords: ''
-        },
-        social: {
-            facebook: '',
-            twitter: '',
-            instagram: '',
-            youtube: ''
+            meta_title: 'K-TECH Electronics - Best Electronics Store in Kenya',
+            meta_description: 'Shop the latest smartphones, laptops, and accessories in Kenya',
+            meta_keywords: 'electronics, smartphones, laptops, Kenya, online shopping'
         }
     });
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSaving, setIsSaving] = useState(false);
-    const [activeSection, setActiveSection] = useState('delivery');
+    const tab = location.pathname.split('/').pop();
+    const activeTab = (tab === 'settings' || tab === 'admin') ? 'general' : tab;
 
     useEffect(() => {
         fetchSettings();
@@ -78,69 +80,15 @@ const AdminSettingsPage = () => {
     const fetchSettings = async () => {
         setIsLoading(true);
         try {
-            const response = await adminAPI.getSettings();
-            setSettings(response.data);
-        } catch (error) {
+            const res = await adminAPI.getSettings();
+            if (res.data) {
+                setSettings(res.data);
+            }
+        } catch (err) {
             toast.error('Failed to load settings');
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const handleDeliveryChange = (key, value) => {
-        setSettings(prev => ({
-            ...prev,
-            delivery: { ...prev.delivery, [key]: parseFloat(value) || 0 }
-        }));
-    };
-
-    const handleShopChange = (key, value) => {
-        setSettings(prev => ({
-            ...prev,
-            shop: { ...prev.shop, [key]: value }
-        }));
-    };
-
-    const handleNotificationChange = (key, value) => {
-        setSettings(prev => ({
-            ...prev,
-            notifications: { ...prev.notifications, [key]: value }
-        }));
-    };
-
-    const handlePaymentChange = (key, value) => {
-        setSettings(prev => ({
-            ...prev,
-            payment: { ...prev.payment, [key]: value }
-        }));
-    };
-
-    const handleSecurityChange = (key, value) => {
-        setSettings(prev => ({
-            ...prev,
-            security: { ...prev.security, [key]: value }
-        }));
-    };
-
-    const handleSEOChange = (key, value) => {
-        setSettings(prev => ({
-            ...prev,
-            seo: { ...prev.seo, [key]: value }
-        }));
-    };
-
-    const handleSocialChange = (key, value) => {
-        setSettings(prev => ({
-            ...prev,
-            social: { ...prev.social, [key]: value }
-        }));
-    };
-
-    const updateSection = (section, key, value) => {
-        setSettings(prev => ({
-            ...prev,
-            [section]: { ...prev[section], [key]: value }
-        }));
     };
 
     const handleSave = async () => {
@@ -148,492 +96,397 @@ const AdminSettingsPage = () => {
         try {
             await adminAPI.updateSettings(settings);
             toast.success('Settings saved successfully');
-        } catch (error) {
+        } catch (err) {
             toast.error('Failed to save settings');
         } finally {
             setIsSaving(false);
         }
     };
 
-    const tabs = [
+    const handleChange = (section, key, value) => {
+        setSettings(prev => ({
+            ...prev,
+            [section]: {
+                ...prev[section],
+                [key]: value
+            }
+        }));
+    };
+
+    const settingsTabs = [
+        { id: 'general', label: 'General', icon: Home },
+        { id: 'payment', label: 'Payment', icon: CreditCard },
         { id: 'delivery', label: 'Delivery', icon: Truck },
-        { id: 'shop', label: 'Shop Info', icon: Building2 },
-        { id: 'payment', label: 'Payment', icon: DollarSign },
         { id: 'notifications', label: 'Notifications', icon: Bell },
         { id: 'security', label: 'Security', icon: Lock },
-        { id: 'seo', label: 'SEO', icon: Search },
-        { id: 'social', label: 'Social Media', icon: Globe },
+        { id: 'seo', label: 'SEO', icon: Globe },
     ];
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-64">
-                <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
+            <div className="flex justify-center py-12">
+                <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
 
-    return (
-        <div className="h-full bg-gray-50">
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
-                <p className="text-gray-500 mt-1">Configure your store settings</p>
+    const renderGeneralSettings = () => (
+        <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Shop Name</label>
+                    <input
+                        type="text"
+                        value={settings.general.shop_name}
+                        onChange={(e) => handleChange('general', 'shop_name', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Shop Email</label>
+                    <input
+                        type="email"
+                        value={settings.general.shop_email}
+                        onChange={(e) => handleChange('general', 'shop_email', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Shop Phone</label>
+                    <input
+                        type="text"
+                        value={settings.general.shop_phone}
+                        onChange={(e) => handleChange('general', 'shop_phone', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Shop Address</label>
+                    <input
+                        type="text"
+                        value={settings.general.shop_address}
+                        onChange={(e) => handleChange('general', 'shop_address', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+                    <input
+                        type="text"
+                        value={settings.general.shop_currency}
+                        onChange={(e) => handleChange('general', 'shop_currency', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+                    <select
+                        value={settings.general.timezone}
+                        onChange={(e) => handleChange('general', 'timezone', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    >
+                        <option value="Africa/Nairobi">Africa/Nairobi (EAT)</option>
+                        <option value="UTC">UTC</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderPaymentSettings = () => (
+        <div className="space-y-6">
+            <div className="space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-gray-50 transition">
+                    <input
+                        type="checkbox"
+                        checked={settings.payment.mpesa_enabled}
+                        onChange={(e) => handleChange('payment', 'mpesa_enabled', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 rounded"
+                    />
+                    <span className="flex items-center gap-2 flex-1">
+                        <span className="font-medium">M-Pesa</span>
+                        <span className="text-sm text-gray-500">Pay with M-Pesa via STK Push</span>
+                    </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-gray-50 transition">
+                    <input
+                        type="checkbox"
+                        checked={settings.payment.card_enabled}
+                        onChange={(e) => handleChange('payment', 'card_enabled', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 rounded"
+                    />
+                    <span className="flex items-center gap-2 flex-1">
+                        <span className="font-medium">Card Payment</span>
+                        <span className="text-sm text-gray-500">Visa, Mastercard, American Express</span>
+                    </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-gray-50 transition">
+                    <input
+                        type="checkbox"
+                        checked={settings.payment.cash_enabled}
+                        onChange={(e) => handleChange('payment', 'cash_enabled', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 rounded"
+                    />
+                    <span className="flex items-center gap-2 flex-1">
+                        <span className="font-medium">Cash on Delivery</span>
+                        <span className="text-sm text-gray-500">Pay when you receive the order</span>
+                    </span>
+                </label>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-6">
-                <div className="lg:w-80 flex-shrink-0">
-                    <div className="bg-white rounded-xl shadow-sm overflow-hidden sticky top-24">
-                        <div className="p-4 border-b border-gray-100">
-                            <h2 className="font-semibold text-gray-800">Settings Menu</h2>
-                            <p className="text-xs text-gray-500 mt-1">Select a section to configure</p>
-                        </div>
-                        <nav className="p-2">
-                            {tabs.map((section) => {
-                                const Icon = section.icon;
-                                const isActive = activeSection === section.id;
-                                return (
-                                    <button
-                                        key={section.id}
-                                        onClick={() => setActiveSection(section.id)}
-                                        className={`w-full flex items-center justify-between p-3 rounded-lg transition-all duration-200 mb-1 ${isActive
-                                            ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-600'
-                                            : 'hover:bg-gray-50 text-gray-700'
-                                            }`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className={`p-2 rounded-lg ${isActive ? 'bg-primary-100' : 'bg-gray-100'}`}>
-                                                <Icon className={`w-4 h-4 ${isActive ? 'text-primary-600' : 'text-gray-500'}`} />
-                                            </div>
-                                            <div className="text-left">
-                                                <p className={`text-sm font-medium ${isActive ? 'text-primary-700' : 'text-gray-700'}`}>
-                                                    {section.label}
-                                                </p>
-                                                <p className="text-xs text-gray-400 hidden lg:block">{section.description}</p>
-                                            </div>
-                                        </div>
-                                        <ChevronRight className={`w-4 h-4 transition-transform ${isActive ? 'text-primary-600' : 'text-gray-400'}`} />
-                                    </button>
-                                );
-                            })}
-                        </nav>
-                    </div>
+            <div className="pt-4 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">M-Pesa Shortcode</label>
+                    <input
+                        type="text"
+                        value={settings.payment.mpesa_shortcode}
+                        onChange={(e) => handleChange('payment', 'mpesa_shortcode', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
                 </div>
-
-                <div className="flex-1">
-                    <motion.div
-                        key={activeSection}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="bg-white rounded-xl shadow-sm p-6"
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Payment Gateway</label>
+                    <select
+                        value={settings.payment.payment_gateway}
+                        onChange={(e) => handleChange('payment', 'payment_gateway', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
                     >
-                        {activeSection === 'delivery' && (
-                            <div>
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                                        <Truck className="w-5 h-5 text-primary-600" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-gray-800">Delivery Settings</h2>
-                                        <p className="text-sm text-gray-500">Configure delivery fees and zones</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Delivery Fee - Nairobi (KSh)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            value={settings.delivery.nairobi}
-                                            onChange={(e) => updateSection('delivery', 'nairobi', parseInt(e.target.value))}
-                                            className="w-full max-w-xs px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Delivery Fee - Other Counties (KSh)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            value={settings.delivery.other}
-                                            onChange={(e) => updateSection('delivery', 'other', parseInt(e.target.value))}
-                                            className="w-full max-w-xs px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Free Delivery Threshold (KSh)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            value={settings.delivery.free_threshold}
-                                            onChange={(e) => updateSection('delivery', 'free_threshold', parseInt(e.target.value))}
-                                            className="w-full max-w-xs px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            Orders above this amount get free delivery
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeSection === 'shop' && (
-                            <div>
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                                        <Building2 className="w-5 h-5 text-primary-600" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-gray-800">Shop Information</h2>
-                                        <p className="text-sm text-gray-500">Basic store information</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Shop Name</label>
-                                        <input
-                                            type="text"
-                                            value={settings.shop.name}
-                                            onChange={(e) => updateSection('shop', 'name', e.target.value)}
-                                            className="w-full max-w-md px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Shop Email</label>
-                                        <input
-                                            type="email"
-                                            value={settings.shop.email}
-                                            onChange={(e) => updateSection('shop', 'email', e.target.value)}
-                                            className="w-full max-w-md px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Shop Phone</label>
-                                        <input
-                                            type="text"
-                                            value={settings.shop.phone}
-                                            onChange={(e) => updateSection('shop', 'phone', e.target.value)}
-                                            className="w-full max-w-md px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Shop Address</label>
-                                        <textarea
-                                            value={settings.shop.address}
-                                            onChange={(e) => updateSection('shop', 'address', e.target.value)}
-                                            rows="2"
-                                            className="w-full max-w-md px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
-                                        <input
-                                            type="url"
-                                            value={settings.shop.logo}
-                                            onChange={(e) => updateSection('shop', 'logo', e.target.value)}
-                                            placeholder="https://..."
-                                            className="w-full max-w-md px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeSection === 'payment' && (
-                            <div>
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                                        <CreditCard className="w-5 h-5 text-primary-600" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-gray-800">Payment Methods</h2>
-                                        <p className="text-sm text-gray-500">Configure payment gateways</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition">
-                                        <input
-                                            type="checkbox"
-                                            checked={settings.payment.mpesa_enabled}
-                                            onChange={(e) => updateSection('payment', 'mpesa_enabled', e.target.checked)}
-                                            className="w-4 h-4 text-primary-600 rounded"
-                                        />
-                                        <span className="flex items-center gap-2 flex-1">
-                                            <Smartphone className="w-5 h-5 text-green-600" />
-                                            <span className="font-medium">M-Pesa</span>
-                                            <span className="text-sm text-gray-500">Pay with M-Pesa via STK Push</span>
-                                        </span>
-                                    </label>
-
-                                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition">
-                                        <input
-                                            type="checkbox"
-                                            checked={settings.payment.card_enabled}
-                                            onChange={(e) => updateSection('payment', 'card_enabled', e.target.checked)}
-                                            className="w-4 h-4 text-primary-600 rounded"
-                                        />
-                                        <span className="flex items-center gap-2 flex-1">
-                                            <CreditCard className="w-5 h-5 text-blue-600" />
-                                            <span className="font-medium">Card Payment</span>
-                                            <span className="text-sm text-gray-500">Visa, Mastercard</span>
-                                        </span>
-                                    </label>
-
-                                    <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition">
-                                        <input
-                                            type="checkbox"
-                                            checked={settings.payment.cash_enabled}
-                                            onChange={(e) => updateSection('payment', 'cash_enabled', e.target.checked)}
-                                            className="w-4 h-4 text-primary-600 rounded"
-                                        />
-                                        <span className="flex items-center gap-2 flex-1">
-                                            <Truck className="w-5 h-5 text-purple-600" />
-                                            <span className="font-medium">Cash on Delivery</span>
-                                            <span className="text-sm text-gray-500">Pay when you receive</span>
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeSection === 'notifications' && (
-                            <div>
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                                        <Bell className="w-5 h-5 text-primary-600" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-gray-800">Notification Settings</h2>
-                                        <p className="text-sm text-gray-500">Configure email and SMS alerts</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <label className="flex items-center gap-3 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={settings.notifications.order_notifications}
-                                            onChange={(e) => updateSection('notifications', 'order_notifications', e.target.checked)}
-                                            className="w-4 h-4 text-primary-600 rounded"
-                                        />
-                                        <span>Email notifications for new orders</span>
-                                    </label>
-
-                                    <label className="flex items-center gap-3 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={settings.notifications.low_stock_notifications}
-                                            onChange={(e) => updateSection('notifications', 'low_stock_notifications', e.target.checked)}
-                                            className="w-4 h-4 text-primary-600 rounded"
-                                        />
-                                        <span>Alert when products are low in stock</span>
-                                    </label>
-
-                                    <label className="flex items-center gap-3 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={settings.notifications.customer_review_notifications}
-                                            onChange={(e) => updateSection('notifications', 'customer_review_notifications', e.target.checked)}
-                                            className="w-4 h-4 text-primary-600 rounded"
-                                        />
-                                        <span>Notify when customers leave reviews</span>
-                                    </label>
-
-                                    <div className="pt-4 mt-4 border-t border-gray-100">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Notification Email (optional)
-                                        </label>
-                                        <input
-                                            type="email"
-                                            value={settings.notifications.notification_email}
-                                            onChange={(e) => updateSection('notifications', 'notification_email', e.target.value)}
-                                            placeholder="admin@ktech.co.ke"
-                                            className="w-full max-w-md px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeSection === 'security' && (
-                            <div>
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                                        <Lock className="w-5 h-5 text-primary-600" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-gray-800">Security Settings</h2>
-                                        <p className="text-sm text-gray-500">Configure security and authentication</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <label className="flex items-center gap-3 cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            checked={settings.security.two_factor_auth}
-                                            onChange={(e) => updateSection('security', 'two_factor_auth', e.target.checked)}
-                                            className="w-4 h-4 text-primary-600 rounded"
-                                        />
-                                        <span>Enable Two-Factor Authentication for admin accounts</span>
-                                    </label>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Session Timeout (minutes)
-                                        </label>
-                                        <input
-                                            type="number"
-                                            value={settings.security.session_timeout}
-                                            onChange={(e) => updateSection('security', 'session_timeout', parseInt(e.target.value))}
-                                            className="w-32 px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            Users will be logged out after this period of inactivity
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeSection === 'seo' && (
-                            <div>
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                                        <Search className="w-5 h-5 text-primary-600" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-gray-800">SEO Settings</h2>
-                                        <p className="text-sm text-gray-500">Meta tags and keywords</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
-                                        <input
-                                            type="text"
-                                            value={settings.seo.meta_title}
-                                            onChange={(e) => updateSection('seo', 'meta_title', e.target.value)}
-                                            placeholder="K-TECH Electronics - Best Electronics in Kenya"
-                                            className="w-full max-w-lg px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
-                                        <textarea
-                                            value={settings.seo.meta_description}
-                                            onChange={(e) => updateSection('seo', 'meta_description', e.target.value)}
-                                            rows="2"
-                                            placeholder="Shop the latest smartphones, laptops, and accessories in Kenya"
-                                            className="w-full max-w-lg px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Meta Keywords</label>
-                                        <input
-                                            type="text"
-                                            value={settings.seo.meta_keywords}
-                                            onChange={(e) => updateSection('seo', 'meta_keywords', e.target.value)}
-                                            placeholder="electronics, smartphones, laptops, Kenya"
-                                            className="w-full max-w-lg px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeSection === 'social' && (
-                            <div>
-                                <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
-                                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
-                                        <Globe className="w-5 h-5 text-primary-600" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-gray-800">Social Media Links</h2>
-                                        <p className="text-sm text-gray-500">Connect your social accounts</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                                            <Facebook className="w-4 h-4 text-blue-600" />
-                                            Facebook
-                                        </label>
-                                        <input
-                                            type="url"
-                                            value={settings.social.facebook}
-                                            onChange={(e) => updateSection('social', 'facebook', e.target.value)}
-                                            placeholder="https://facebook.com/ktech"
-                                            className="w-full max-w-lg px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                                            <Twitter className="w-4 h-4 text-blue-400" />
-                                            Twitter
-                                        </label>
-                                        <input
-                                            type="url"
-                                            value={settings.social.twitter}
-                                            onChange={(e) => updateSection('social', 'twitter', e.target.value)}
-                                            placeholder="https://twitter.com/ktech"
-                                            className="w-full max-w-lg px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                                            <Instagram className="w-4 h-4 text-pink-600" />
-                                            Instagram
-                                        </label>
-                                        <input
-                                            type="url"
-                                            value={settings.social.instagram}
-                                            onChange={(e) => updateSection('social', 'instagram', e.target.value)}
-                                            placeholder="https://instagram.com/ktech"
-                                            className="w-full max-w-lg px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                                            <Youtube className="w-4 h-4 text-red-600" />
-                                            YouTube
-                                        </label>
-                                        <input
-                                            type="url"
-                                            value={settings.social.youtube}
-                                            onChange={(e) => updateSection('social', 'youtube', e.target.value)}
-                                            placeholder="https://youtube.com/@ktech"
-                                            className="w-full max-w-lg px-4 py-2 border border-gray-200 rounded-lg"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
-                            <button
-                                onClick={handleSave}
-                                disabled={isSaving}
-                                className="flex items-center gap-2 px-6 py-2.5 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition disabled:opacity-50"
-                            >
-                                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                                {isSaving ? 'Saving...' : 'Save Settings'}
-                            </button>
-                        </div>
-                    </motion.div>
+                        <option value="pesapal">PesaPal</option>
+                        <option value="stripe">Stripe</option>
+                        <option value="paypal">PayPal</option>
+                    </select>
                 </div>
+            </div>
+        </div>
+    );
+
+    const renderDeliverySettings = () => (
+        <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Fee - Nairobi (KSh)</label>
+                    <input
+                        type="number"
+                        value={settings.delivery.nairobi_fee}
+                        onChange={(e) => handleChange('delivery', 'nairobi_fee', parseFloat(e.target.value))}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Fee - Other Counties (KSh)</label>
+                    <input
+                        type="number"
+                        value={settings.delivery.other_counties_fee}
+                        onChange={(e) => handleChange('delivery', 'other_counties_fee', parseFloat(e.target.value))}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Free Delivery Threshold (KSh)</label>
+                    <input
+                        type="number"
+                        value={settings.delivery.free_delivery_threshold}
+                        onChange={(e) => handleChange('delivery', 'free_delivery_threshold', parseFloat(e.target.value))}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Orders above this amount get free delivery</p>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Estimated Delivery Time</label>
+                    <input
+                        type="text"
+                        value={settings.delivery.delivery_time}
+                        onChange={(e) => handleChange('delivery', 'delivery_time', e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                    />
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderNotificationsSettings = () => (
+        <div className="space-y-6">
+            <div className="space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-gray-50 transition">
+                    <input
+                        type="checkbox"
+                        checked={settings.notifications.order_notifications}
+                        onChange={(e) => handleChange('notifications', 'order_notifications', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 rounded"
+                    />
+                    <span>Email notifications for new orders</span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-gray-50 transition">
+                    <input
+                        type="checkbox"
+                        checked={settings.notifications.low_stock_notifications}
+                        onChange={(e) => handleChange('notifications', 'low_stock_notifications', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 rounded"
+                    />
+                    <span>Alert when products are low in stock</span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-gray-50 transition">
+                    <input
+                        type="checkbox"
+                        checked={settings.notifications.customer_review_notifications}
+                        onChange={(e) => handleChange('notifications', 'customer_review_notifications', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 rounded"
+                    />
+                    <span>Notify when customers leave reviews</span>
+                </label>
+            </div>
+
+            <div className="pt-4 border-t border-gray-100">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Notification Email</label>
+                <input
+                    type="email"
+                    value={settings.notifications.notification_email}
+                    onChange={(e) => handleChange('notifications', 'notification_email', e.target.value)}
+                    className="w-full max-w-md px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">Leave empty to use shop email</p>
+            </div>
+        </div>
+    );
+
+    const renderSecuritySettings = () => (
+        <div className="space-y-6">
+            <div className="space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-gray-50 transition">
+                    <input
+                        type="checkbox"
+                        checked={settings.security.two_factor_auth}
+                        onChange={(e) => handleChange('security', 'two_factor_auth', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 rounded"
+                    />
+                    <span>Enable Two-Factor Authentication for admin accounts</span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl hover:bg-gray-50 transition">
+                    <input
+                        type="checkbox"
+                        checked={settings.security.require_strong_password}
+                        onChange={(e) => handleChange('security', 'require_strong_password', e.target.checked)}
+                        className="w-4 h-4 text-primary-600 rounded"
+                    />
+                    <span>Require strong passwords</span>
+                </label>
+            </div>
+
+            <div className="pt-4 border-t border-gray-100">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Session Timeout (minutes)</label>
+                <input
+                    type="number"
+                    value={settings.security.session_timeout}
+                    onChange={(e) => handleChange('security', 'session_timeout', parseInt(e.target.value))}
+                    className="w-32 px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">Users will be logged out after this period of inactivity</p>
+            </div>
+        </div>
+    );
+
+    const renderSEOSettings = () => (
+        <div className="space-y-6">
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+                <input
+                    type="text"
+                    value={settings.seo.meta_title}
+                    onChange={(e) => handleChange('seo', 'meta_title', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">Recommended: 50-60 characters</p>
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                <textarea
+                    value={settings.seo.meta_description}
+                    onChange={(e) => handleChange('seo', 'meta_description', e.target.value)}
+                    rows="2"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">Recommended: 150-160 characters</p>
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Meta Keywords</label>
+                <input
+                    type="text"
+                    value={settings.seo.meta_keywords}
+                    onChange={(e) => handleChange('seo', 'meta_keywords', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                />
+                <p className="text-xs text-gray-500 mt-1">Comma-separated keywords</p>
+            </div>
+        </div>
+    );
+
+    const renderSettingsContent = () => {
+        switch (activeTab) {
+            case 'general':
+                return renderGeneralSettings();
+            case 'payment':
+                return renderPaymentSettings();
+            case 'delivery':
+                return renderDeliverySettings();
+            case 'notifications':
+                return renderNotificationsSettings();
+            case 'security':
+                return renderSecuritySettings();
+            case 'seo':
+                return renderSEOSettings();
+            default:
+                return renderGeneralSettings();
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-primary-600 bg-clip-text text-transparent">
+                        Settings
+                    </h1>
+                    <p className="text-gray-500 mt-1">Configure your store settings</p>
+                </div>
+                <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="flex items-center gap-2 px-6 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition shadow-sm disabled:opacity-50"
+                >
+                    <Save className="w-4 h-4" />
+                    {isSaving ? 'Saving...' : 'Save Settings'}
+                </button>
+            </div>
+
+            <div className="flex flex-wrap gap-1 bg-white rounded-xl shadow-sm border border-gray-100 p-1">
+                {settingsTabs.map((tab) => {
+                    const Icon = tab.icon;
+                    const isActive = activeTab === tab.id;
+                    return (
+                        <Link
+                            key={tab.id}
+                            to={`/admin/settings/${tab.id}`}
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition ${isActive
+                                ? 'bg-primary-600 text-white shadow-sm'
+                                : 'text-gray-600 hover:bg-gray-100'
+                                }`}
+                        >
+                            <Icon className="w-4 h-4" />
+                            {tab.label}
+                        </Link>
+                    );
+                })}
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                {renderSettingsContent()}
             </div>
         </div>
     );

@@ -3,8 +3,9 @@ from sqlalchemy import Column,Integer,String,DateTime,Float,JSON,ForeignKey
 from sqlalchemy.orm import relationship
 from app.database.postgres import Base
 from datetime import datetime
+import enum
 
-class OrderStatus(str,Enum):
+class OrderStatus(str,enum.Enum):
     PENDING = "pending"
     PROCESSING = "processing"
     PACKED = "packed"
@@ -14,13 +15,13 @@ class OrderStatus(str,Enum):
     REFUNDED = "refunded"
     PAID = "paid"
 
-class PaymentStatus(str,Enum):
+class PaymentStatus(str,enum.Enum):
     PENDING = "pending"
     PAID = "paid"
     FAILED = "failed"
     REFUNDED = "refunded"
 
-class PaymentMethod(str,Enum):
+class PaymentMethod(str,enum.Enum):
     CASH = "cash"
     MPESA = "mpesa"
     VISA = "visa"

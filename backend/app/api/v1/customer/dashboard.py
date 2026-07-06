@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.postgres import get_db
 from app.services.order_service import OrderService
 
-router = APIRouter("/customer/dashboard",tags=["Customer Dashboard"])
+router = APIRouter(prefix="/customer/dashboard",tags=["Customer Dashboard"])
 
 @router.get("/",response_model=dict)
 async def get_customer_summary(db = Depends(get_db),current_user:dict = Depends(get_current_user)):

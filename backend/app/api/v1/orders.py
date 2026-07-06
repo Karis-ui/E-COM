@@ -6,7 +6,7 @@ from app.services.cart_service import CartService
 from app.services.product_service import ProductService
 from app.models.user import User
 from app.core.security import get_current_user
-from app.api.v1.cart import get_cart_id
+from app.api.v1.cart import get_cart_identifier
 from app.database.mongodb import get_mongo_db
 from typing import Optional
 from pydantic import BaseModel,Field
@@ -31,7 +31,7 @@ def get_product_service():
     return ProductService()
 
 @router.post("/checkout")
-async def create_order(request:CheckoutRequest,current_user:dict=Depends(get_current_user),cart_id:str=Depends(get_cart_id),db:AsyncSession=Depends(get_db),product_service:ProductService=Depends(get_product_service)):
+async def create_order(request:CheckoutRequest,current_user:dict=Depends(get_current_user),cart_id:str=Depends(get_cart_identifier),db:AsyncSession=Depends(get_db),product_service:ProductService=Depends(get_product_service)):
     request.deliver_details["phone"] = current_user["phone"]
     order = await OrderService.create_order(
         db=db,

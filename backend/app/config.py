@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/K.Tech Electronics and Industries"
+    DATABASE_URL: str = "postgresql+asyncpg://postgres:Mankaloko@localhost:5432/electroshop"
     SECRET_KEY: str
     HOST: str = "[IP_ADDRESS]"
     PORT: int = 8000
@@ -14,11 +14,11 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str = "localhost"
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = "postgres"
-    POSTGRES_PASSWORD: str = "postgres"
-    POSTGRES_DB: str = "K.Tech Electronics and Industries"
+    POSTGRES_PASSWORD: str = "Mankaloko"
+    POSTGRES_DB: str = "electroshop"
 
     MONGODB_URI: str = "mongodb://localhost:27017"
-    MONGODB_DB: str = "K.Tech Electronics and Industries"
+    MONGODB_DB: str = "electroshop"
 
     REDIS_URL: str = "redis://localhost:6379/0"
 

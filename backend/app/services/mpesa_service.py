@@ -1,6 +1,6 @@
 from fastapi import requests
 import base64
-import requests,json
+import json
 from typing import Optional,Dict
 from app.config import settings
 from datetime import datetime

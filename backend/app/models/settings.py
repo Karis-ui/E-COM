@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, Text, JSON, DateTime
 from sqlalchemy.sql import func
-from app.database import Base
+from app.database.postgres import Base
 
 class ShopSettings(Base):
     __tablename__ = 'shop_settings'

@@ -10,7 +10,7 @@ from app.api.v1.admin.analytic_service import AnalyticService
 from datetime import datetime,timedelta
 from sqlalchemy import func,select
 
-router = APIRouter("/admin/dashboard",tags=["Admin - Dashboard"])
+router = APIRouter(prefix="/admin/dashboard",tags=["Admin - Dashboard"])
 
 @router.get("/stats")
 async def get_dashboard_stats(

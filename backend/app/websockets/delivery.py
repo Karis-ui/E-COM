@@ -1,4 +1,3 @@
-from pymongo.ssl_support import exc
 from fastapi import WebSocket,WebSocketDisconnect
 from app.database.redis import get_redis
 import json

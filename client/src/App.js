@@ -9,6 +9,8 @@ import Navbar from './components/common/Navbar';
 import Footer from './components/common/footer';
 import FloatingToolbar from './components/common/FloatingToolbar';
 import LoadingSpinner from './components/common/LoadingSpinner';
+import AdminLayout from './components/admin/AdminLayout';
+import { timeoutManager } from '@tanstack/react-query';
 
 const HomePage = React.lazy(() => import('./pages/HomePage'));
 const ShopPage = React.lazy(() => import('./pages/ShopPage'));
@@ -40,7 +42,7 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   if (!token) {
-    return <Navigate to="/checkout" replace />
+    return <Navigate to="/login" replace />
   }
 
   if (adminOnly && user.role !== 'admin') {
@@ -80,34 +82,41 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-
                 <Route path="/admin-login" element={<AdminLogin />} />
-                <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-                <Route path="/admin/products" element={<AdminProductPage />} />
-                <Route path="/admin/categories" element={<AdminCategoriesPage />} />
-                <Route path="/admin/brands" element={<AdminBrandsPage />} />
-                <Route path="/admin/orders" element={<AdminOrdersPage />} />
-                <Route path="/admin/riders" element={<AdminRidersPage />} />
-                <Route path="/admin/customers" element={<AdminCustomersPage />} />
-                <Route path="/admin/coupons" element={<AdminCouponsPage />} />
-                <Route path="/admin/settings" element={<AdminSettingsPage />} />
 
-                <Route path="/profile" element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
+                <Route path='/orders' element={
+                  <ProtectedRoute><OrdersPage /></ProtectedRoute>
                 } />
-                <Route path="/orders" element={
-                  <ProtectedRoute>
-                    <OrdersPage />
-                  </ProtectedRoute>
+                <Route path='/profile' element={
+                  <ProtectedRoute><ProfilePage /></ProtectedRoute>
                 } />
-
                 <Route path="/admin" element={
                   <ProtectedRoute adminOnly>
-                    <AdminDashboardPage />
+                    <AdminLayout />
                   </ProtectedRoute>
-                } />
+                }>
+                  <Route index element={<AdminDashboardPage />} />
+                  <Route path="products" element={<AdminProductPage />} />
+                  <Route path="products/add" element={<AdminProductPage />} />
+                  <Route path="categories" element={<AdminCategoriesPage />} />
+                  <Route path="brands" element={<AdminBrandsPage />} />
+                  <Route path="orders" element={<AdminOrdersPage />} />
+                  <Route path="orders/:status" element={<AdminOrdersPage />} />
+                  <Route path="riders" element={<AdminRidersPage />} />
+                  <Route path="riders/add" element={<AdminRidersPage />} />
+                  <Route path="delivery/assign" element={<AdminRidersPage />} />
+                  <Route path="delivery/track" element={<AdminRidersPage />} />
+                  <Route path="customers" element={<AdminCustomersPage />} />
+                  <Route path="customers/add" element={<AdminRidersPage />} />
+                  <Route path="coupons" element={<AdminCouponsPage />} />
+                  <Route path="coupons/add" element={<AdminRidersPage />} />
+                  <Route path="reports" element={<AdminRidersPage />} />
+                  <Route path="reports/:type" element={<AdminRidersPage />} />
+                  <Route path="settings" element={<AdminSettingsPage />} />
+                  <Route path="settings/:tab" element={<AdminRidersPage />} />
+
+                  <Route path='*' element={<Navigate to="/" replace />} />
+                </Route>
               </Routes>
             </React.Suspense>
           </main>

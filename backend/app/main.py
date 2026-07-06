@@ -4,8 +4,8 @@ from app.database.postgres import engine,Base
 from app.config import settings
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
-from app.database.mongodb import connect_to_mongo,close_mongo_connection
-from app.database.redis import connect_redis,close_redis
+from app.database.mongodb import connect_to_mongo,close_mongo
+from app.database.redis import get_redis,close_redis
 from app.api.v1.admin import categories as admin_categories,brands as admin_brands,products as admin_products
 from app.api.v1 import products,cart,checkout,orders
 from app.api.v1.customer import addresses,reviews,dashboard
@@ -17,14 +17,14 @@ async def lifespan(app:FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     await connect_to_mongo()
-    redis = await connect_redis()
+    redis = await get_redis()
     await redis.ping()
     print("Redis connected")
     yield
 
     print(f"Shutting down {settings.APP_NAME}")
     await engine.dispose()
-    await close_mongo_connection()
+    await close_mongo()
     await close_redis()
 
 app = FastAPI(
@@ -55,7 +55,7 @@ async def root():
 
 app.get("/health")
 async def health_check():
-    redis = await connect_redis()
+    redis = await get_redis()
     await redis.ping()
     return {
         "status": "healthy",

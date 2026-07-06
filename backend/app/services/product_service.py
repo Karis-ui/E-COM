@@ -11,7 +11,7 @@ class ProductService:
     
     async def create_product(self,product_data: Product,admin_id:int) -> dict:
         product_data['created_by'] = admin_id
-        product = Product(**product_data)
+        product = Product(*product_data)
         product_dict = product.model_dump(by_alias=True)
 
         if not product_dict.get('sku'):

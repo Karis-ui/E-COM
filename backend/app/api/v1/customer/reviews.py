@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.postgres import get_db
 from app.services.order_service import OrderService
 
-router = APIRouter("/customer/reviews",tags=["Customer Reviews"])
+router = APIRouter(prefix="/customer/reviews",tags=["Customer Reviews"])
 
 class ReviewCreate(BaseModel):
     rating:int = Field(...,ge=1,le=5)

@@ -1,15 +1,16 @@
-# scripts/seed_data.py
-
 import asyncio
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from app.database.postgres import AsyncSessionLocal
-from app.database.mongodb import mongodb, connect_to_mongo
+from app.database.mongodb import mongodb,connect_to_mongo
 from app.models.user import User
 from app.core.security import get_password_hash
 
 async def seed_admin():
-    """Create admin user"""
     async with AsyncSessionLocal() as db:
-        # Check if admin exists
         from sqlalchemy import select
         result = await db.execute(select(User).where(User.email == "admin@ktech.co.ke"))
         admin = result.scalar_one_or_none()
@@ -33,7 +34,6 @@ async def seed_admin():
             print("⏭️ Admin user already exists")
 
 async def seed_categories():
-    """Seed product categories in MongoDB"""
     await connect_to_mongo()
     
     categories = [

@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,Boolean,DateTime,Enum,DECIMAL
+from sqlalchemy import Column,Integer,String,Boolean,DECIMAL,Enum,DateTime
 from sqlalchemy.sql import func
 from app.database.postgres import Base
 import enum

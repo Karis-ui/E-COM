@@ -1,4 +1,3 @@
-from app.models import Category
 from typing import Optional
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from bson import ObjectId

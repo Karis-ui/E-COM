@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine,AsyncSession
 from app.config import settings
 from sqlalchemy.orm import declarative_base,sessionmaker
-from sqlalchemy import Column,Integer,String,DateTime,Enum,Numeric,ForeignKey,Text,Boolean,JSON,Index
+from sqlalchemy import Column,Integer,String,DateTime,Numeric,ForeignKey,Text,Boolean,JSON,Index
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 

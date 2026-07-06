@@ -13,7 +13,7 @@ from app.services.cart_service import CartService
 from app.core.security import create_access_token
 from datetime import datetime,timedelta
 from app.models.user import UserProfile
-from app.api.v1.cart import get_cart_id
+from app.api.v1.cart import get_cart_identifier
 from app.models.user import User
 import random
 
@@ -112,12 +112,12 @@ async def verify_checkout_otp(request:OTPRequest,db:AsyncSession=Depends(get_db)
         "access_token": access_token,
         "token_type": "bearer",
         "user_id": user.id,
-        "needs_details": not user.first_name  # New users need to fill details
+        "needs_details": not user.first_name  
     }
 
 @router.post("/confirm")
-async def confirm_checkout(request:CheckoutConfirmRequest,current_user:dict=Depends(get_current_user),cart_id:str=Depends(get_cart_id),db=Depends(get_db),mongo_db=Depends(get_mongo_db)):
-    result = await db.execute(select(User).where(User.id == current_user["id"]))
+async def confirm_checkout(request:CheckoutConfirmRequest,current_user:dict=Depends(get_current_user),cart_id:str=Depends(get_cart_identifier),db=Depends(get_db),mongo_db=Depends(get_mongo_db)):
+    result = await db.execute(select(User).where(User.id == current_user["sub"]))
     user = result.scalar_one()
 
     if not user.first_name:

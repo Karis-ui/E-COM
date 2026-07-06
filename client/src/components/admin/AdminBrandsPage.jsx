@@ -19,7 +19,6 @@ const AdminBrandsPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [viewMode, setViewMode] = useState('grid');
     const [filterStatus, setFilterStatus] = useState('all');
-    const [activeSettingsTab, setActiveSettingsTab] = useState('brands');
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -29,16 +28,14 @@ const AdminBrandsPage = () => {
 
     const itemsPerPage = 9;
 
-    const settingsMenu = [
+    const sidebarMenu = [
         { id: 'brands', label: 'Brands', icon: Building2, description: 'Manage product brands' },
         { id: 'categories', label: 'Categories', icon: Tag, description: 'Manage product categories' },
         { id: 'delivery', label: 'Delivery', icon: Truck, description: 'Configure delivery fees' },
         { id: 'payment', label: 'Payment', icon: CreditCard, description: 'Payment methods & settings' },
-        { id: 'notifications', label: 'Notifications', icon: Bell, description: 'Email & SMS notifications' },
-        { id: 'security', label: 'Security', icon: Lock, description: 'Security & access control' },
-        { id: 'seo', label: 'SEO', icon: Globe, description: 'Search engine optimization' },
-        { id: 'social-media', label: 'Social Media', icon: Share2, description: 'Social media integration' },
     ];
+
+    const [activeTab, setActiveTab] = useState('brands');
 
     useEffect(() => {
         fetchBrands();
@@ -153,7 +150,7 @@ const AdminBrandsPage = () => {
         setCurrentPage(1);
     }, [searchTerm, filterStatus]);
 
-    const ActiveIcon = settingsMenu.find(m => m.id === activeSettingsTab)?.icon || Settings;
+    const ActiveIcon = sidebarMenu.find(m => m.id === activeTab)?.icon || Building2;
 
     const renderBrandsContent = () => (
         <>
@@ -355,17 +352,24 @@ const AdminBrandsPage = () => {
         </>
     );
 
-    const renderSettingsContent = () => {
-        switch (activeSettingsTab) {
-            case 'brands':
-                return renderBrandsContent();
-            default:
-                return (
-                    <div className="text-center py-12">
-                        <p className="text-gray-500">Configure {settingsMenu.find(m => m.id === activeSettingsTab)?.label} settings here</p>
-                    </div>
-                );
+    const renderContent = () => {
+        if (activeTab === 'brands') {
+            return renderBrandsContent();
         }
+        return (
+            <div className="text-center py-12">
+                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    {sidebarMenu.find(m => m.id === activeTab)?.icon ?
+                        React.createElement(sidebarMenu.find(m => m.id === activeTab).icon, { className: "w-10 h-10 text-gray-400" }) :
+                        <Settings className="w-10 h-10 text-gray-400" />
+                    }
+                </div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                    {sidebarMenu.find(m => m.id === activeTab)?.label || activeTab}
+                </h3>
+                <p className="text-gray-500">Configure {sidebarMenu.find(m => m.id === activeTab)?.label?.toLowerCase() || activeTab} settings here</p>
+            </div>
+        );
     };
 
     return (
@@ -373,21 +377,20 @@ const AdminBrandsPage = () => {
             <div className="flex">
                 <div className="w-72 bg-white border-r border-gray-200 min-h-screen flex-shrink-0">
                     <div className="p-6 border-b border-gray-200">
-                        <h2 className="text-lg font-bold text-gray-800">Configure your store</h2>
-                        <p className="text-sm text-gray-500 mt-1">Settings Menu</p>
-                        <p className="text-xs text-gray-400 mt-2">Select a section to configure</p>
+                        <h2 className="text-lg font-bold text-gray-800">Settings</h2>
+                        <p className="text-sm text-gray-500 mt-1">Manage your store</p>
                     </div>
                     <nav className="p-3">
-                        {settingsMenu.map((item) => {
+                        {sidebarMenu.map((item) => {
                             const Icon = item.icon;
-                            const isActive = activeSettingsTab === item.id;
+                            const isActive = activeTab === item.id;
                             return (
                                 <button
                                     key={item.id}
-                                    onClick={() => setActiveSettingsTab(item.id)}
+                                    onClick={() => setActiveTab(item.id)}
                                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 mb-1 ${isActive
-                                            ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-600'
-                                            : 'text-gray-600 hover:bg-gray-50'
+                                        ? 'bg-primary-50 text-primary-700 border-l-4 border-primary-600'
+                                        : 'text-gray-600 hover:bg-gray-50'
                                         }`}
                                 >
                                     <Icon className={`w-5 h-5 ${isActive ? 'text-primary-600' : 'text-gray-400'}`} />
@@ -407,19 +410,19 @@ const AdminBrandsPage = () => {
                     <div className="max-w-5xl mx-auto">
                         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
                             <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
-                                <ActiveIcon className="w-5 h-5 text-primary-600" />
+                                {React.createElement(sidebarMenu.find(m => m.id === activeTab)?.icon || Building2, { className: "w-5 h-5 text-primary-600" })}
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-gray-800">
-                                    {settingsMenu.find(m => m.id === activeSettingsTab)?.label}
+                                    {sidebarMenu.find(m => m.id === activeTab)?.label || 'Brands'}
                                 </h1>
                                 <p className="text-gray-500 text-sm">
-                                    {settingsMenu.find(m => m.id === activeSettingsTab)?.description}
+                                    {sidebarMenu.find(m => m.id === activeTab)?.description || 'Manage your store settings'}
                                 </p>
                             </div>
                         </div>
                         <div className="bg-white rounded-xl border border-gray-200 p-6">
-                            {renderSettingsContent()}
+                            {renderContent()}
                         </div>
                     </div>
                 </div>
