@@ -1,3 +1,7 @@
+# requirements.txt - Remove Pillow
+# Pillow==10.1.0   <- DELETE THIS LINE
+
+# Keep everything else
 aiohttp==3.8.5
 aiosignal==1.4.0
 aiosqlite==0.19.0
@@ -34,14 +38,13 @@ motor==3.1.1
 multidict==6.7.1
 passlib==1.7.4
 phonenumbers==8.13.29
-Pillow==10.1.0
 propcache==0.5.2
 pyasn1==0.6.3
 pycparser==3.0
 pydantic==2.13.4
 pydantic-settings==2.0.3
 pydantic_core==2.46.4
-pymongo==4.3.3
+pymongo==4.17.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.0
 python-jose==3.3.0
