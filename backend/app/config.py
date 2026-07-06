@@ -2,9 +2,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
 
 class Settings(BaseSettings):
-    APP_NAME: str = "ElectroShop Kenya API"
+    APP_NAME: str = "K TECH PRODUCTION AND INDUSTRIES"
     APP_VERSION: str = "1.0.0"
-    ENVIRONMENT: str = "development"
+    ENVIRONMENT: str = "production"
     DEBUG: bool = True
     DATABASE_URL: str = "postgresql+asyncpg://postgres:Mankaloko@localhost:5432/electroshop"
     SECRET_KEY: str
