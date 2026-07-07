@@ -78,7 +78,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.get("/")
+@app.get("/")
 async def root():
     return{
         "name": settings.APP_NAME,
@@ -87,7 +87,7 @@ async def root():
         "environment": settings.ENVIRONMENT
     }
 
-app.get("/health")
+@app.get("/health")
 async def health_check():
     redis = await get_redis()
     await redis.ping()
