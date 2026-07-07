@@ -95,21 +95,21 @@ print("📦 IMPORTING ROUTERS...")
 print("="*50)
 
 routers = [
-    ("app.api.v1.auth", "/api/v1/auth", ["Authentication"]),
-    ("app.api.v1.products", "/api/v1/products", ["Products"]),
-    ("app.api.v1.cart", "/api/v1/cart", ["Cart"]),
-    ("app.api.v1.checkout", "/api/v1/checkout", ["Checkout"]),
-    ("app.api.v1.orders", "/api/v1/orders", ["Orders"]),
-    ("app.api.v1.customer.addresses", "/api/v1/customer/addresses", ["Customer - Addresses"]),
-    ("app.api.v1.customer.reviews", "/api/v1/customer/reviews", ["Customer - Reviews"]),
-    ("app.api.v1.customer.dashboard", "/api/v1/customer/dashboard", ["Customer - Dashboard"]),
-    ("app.api.v1.admin.categories", "/api/v1/admin/categories", ["Admin - Categories"]),
-    ("app.api.v1.admin.brands", "/api/v1/admin/brands", ["Admin - Brands"]),
-    ("app.api.v1.admin.products", "/api/v1/admin/products", ["Admin - Products"]),
-    ("app.api.v1.admin.dashboard", "/api/v1/admin/dashboard", ["Admin - Dashboard"]),
-    ("app.api.v1.admin.orders", "/api/v1/admin/orders", ["Admin - Orders"]),
-    ("app.api.v1.admin.coupon", "/api/v1/admin/coupon", ["Admin - Coupon"]),
-    ("app.api.v1.admin.settings", "/api/v1/admin/settings", ["Admin - Settings"]),
+    ("app.api.v1.auth", "/api/v1", ["Authentication"]),
+    ("app.api.v1.products", "/api/v1", ["Products"]),
+    ("app.api.v1.cart", "/api/v1", ["Cart"]),
+    ("app.api.v1.checkout", "/api/v1", ["Checkout"]),
+    ("app.api.v1.orders", "/api/v1", ["Orders"]),
+    ("app.api.v1.customer.addresses", "/api/v1/customer", ["Customer - Addresses"]),
+    ("app.api.v1.customer.reviews", "/api/v1/customer", ["Customer - Reviews"]),
+    ("app.api.v1.customer.dashboard", "/api/v1/customer", ["Customer - Dashboard"]),
+    ("app.api.v1.admin.categories", "/api/v1/admin", ["Admin - Categories"]),
+    ("app.api.v1.admin.brands", "/api/v1/admin", ["Admin - Brands"]),
+    ("app.api.v1.admin.products", "/api/v1/admin", ["Admin - Products"]),
+    ("app.api.v1.admin.dashboard", "/api/v1/admin", ["Admin - Dashboard"]),
+    ("app.api.v1.admin.orders", "/api/v1/admin", ["Admin - Orders"]),
+    ("app.api.v1.admin.coupon", "/api/v1/admin", ["Admin - Coupon"]),
+    ("app.api.v1.admin.settings", "/api/v1/admin", ["Admin - Settings"]),
 ]
 
 for module_name, prefix, tags in routers:
