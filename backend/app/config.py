@@ -1,14 +1,15 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List
 
+
 class Settings(BaseSettings):
     APP_NAME: str = "K TECH PRODUCTION AND INDUSTRIES"
     APP_VERSION: str = "1.0.0"
     ENVIRONMENT: str = "production"
     DEBUG: bool = True
     DATABASE_URL: str = "postgresql+asyncpg://postgres:Mankaloko@localhost:5432/electroshop"
-    SECRET_KEY: str
-    HOST: str = "[IP_ADDRESS]"
+    SECRET_KEY: str = "dev-secret-key"
+    HOST: str = "0.0.0.0"
     PORT: int = 8000
 
     POSTGRES_HOST: str = "localhost"
@@ -22,27 +23,27 @@ class Settings(BaseSettings):
 
     REDIS_URL: str = "redis://localhost:6379/0"
 
-    JWT_SECRET_KEY: str
-    JWT_REFRESH_SECRET_KEY: str
+    JWT_SECRET_KEY: str = "dev-jwt-secret"
+    JWT_REFRESH_SECRET_KEY: str = "dev-refresh-secret"
 
-    AT_API_KEY: str
+    AT_API_KEY: str = "dummy"
     AT_USERNAME: str = "sandbox"
     AT_SENDER_ID: str = "ElectroShop"
 
-    MPESA_CONSUMER_KEY: str
-    MPESA_CONSUMER_SECRET: str
-    MPESA_PASSKEY: str
-    MPESA_SHORTCODE: str
-    MPESA_CALLBACK_URL: str
+    MPESA_CONSUMER_KEY: str = "dummy"
+    MPESA_CONSUMER_SECRET: str = "dummy"
+    MPESA_PASSKEY: str = "dummy"
+    MPESA_SHORTCODE: str = "dummy"
+    MPESA_CALLBACK_URL: str = "https://example.com"
     MPESA_ENVIRONMENT: str = "sandbox"
 
-    SMTP_HOST: str = "stmp.gmail.com"
-    SMTP_PORT: int
-    SMTP_USER: str
-    SMTP_PASSWORD: str
-    SMTP_FROM_EMAIL: str
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = "dummy"
+    SMTP_PASSWORD: str = "dummy"
+    SMTP_FROM_EMAIL: str = "dummy@example.com"
 
-    ALLOWED_ORIGINS: List[str] = []
+    ALLOWED_ORIGINS: List[str] = ["*"]
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -61,5 +62,6 @@ class Settings(BaseSettings):
     @property
     def is_testing(self) -> bool:
         return self.ENVIRONMENT == "testing"
+
 
 settings = Settings()

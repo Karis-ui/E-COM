@@ -1,31 +1,65 @@
-from fastapi import FastAPI
-from app.api.v1.auth import router 
-from app.database.postgres import engine,Base
-from app.config import settings
+import logging
 from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database.mongodb import connect_to_mongo,close_mongo
-from app.database.redis import get_redis,close_redis
-from app.api.v1.admin import categories as admin_categories,brands as admin_brands,products as admin_products
-from app.api.v1 import products,cart,checkout,orders
-from app.api.v1.customer import addresses,reviews,dashboard
-from app.api.v1.admin import dashboard,orders,products,coupon,settings as admin_settings
+
+from app.api.v1 import cart, checkout, orders, products
+from app.api.v1.admin import (
+    brands as admin_brands,
+    categories as admin_categories,
+    coupon,
+    dashboard,
+    orders as admin_orders,
+    products as admin_products,
+    settings as admin_settings,
+)
+from app.api.v1.auth import router
+from app.api.v1.customer import addresses, dashboard as customer_dashboard, reviews
+from app.config import settings
+from app.database.mongodb import close_mongo, connect_to_mongo
+from app.database.postgres import Base, engine
+from app.database.redis import close_redis, get_redis
+
+logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
-async def lifespan(app:FastAPI):
+async def lifespan(app: FastAPI):
     print(f"Starting {settings.APP_NAME} v {settings.APP_VERSION}")
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    await connect_to_mongo()
-    redis = await get_redis()
-    await redis.ping()
-    print("Redis connected")
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+    except Exception as exc:
+        logger.warning("Postgres startup skipped: %s", exc)
+
+    try:
+        await connect_to_mongo()
+    except Exception as exc:
+        logger.warning("Mongo startup skipped: %s", exc)
+
+    try:
+        redis = await get_redis()
+        await redis.ping()
+        print("Redis connected")
+    except Exception as exc:
+        logger.warning("Redis startup skipped: %s", exc)
+
     yield
 
     print(f"Shutting down {settings.APP_NAME}")
-    await engine.dispose()
-    await close_mongo()
-    await close_redis()
+    try:
+        await engine.dispose()
+    except Exception:
+        pass
+    try:
+        await close_mongo()
+    except Exception:
+        pass
+    try:
+        await close_redis()
+    except Exception:
+        pass
 
 app = FastAPI(
     title=settings.APP_NAME,
