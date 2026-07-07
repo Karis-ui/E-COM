@@ -119,67 +119,27 @@ async def health_check():
         },
         "environment": settings.ENVIRONMENT,
     }
-from app.api.v1.auth import router as auth_router
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
 
-# Products
-from app.api.v1.products import router as products_router
-app.include_router(products_router, prefix="/api/v1/products", tags=["Products"])
 
-# Cart
-from app.api.v1.cart import router as cart_router
-app.include_router(cart_router, prefix="/api/v1/cart", tags=["Cart"])
+routers = [
+    ("app.api.v1.auth", "/api/v1", ["Authentication"]),
+    ("app.api.v1.admin.categories", "/api/v1/admin", ["Admin - Categories"]),
+    ("app.api.v1.admin.brands", "/api/v1", ["Admin - Brands"]),
+    ("app.api.v1.admin.products", "/api/v1", ["Admin - Products"]),
+    ("app.api.v1.products", "/api/v1", ["Products"]),
+    ("app.api.v1.cart", "/api/v1", ["Cart"]),
+    ("app.api.v1.checkout", "/api/v1", ["Checkout"]),
+    ("app.api.v1.orders", "/api/v1", ["Orders"]),
+    ("app.api.v1.customer.addresses", "/api/v1", ["Customer - Addresses"]),
+    ("app.api.v1.customer.reviews", "/api/v1", ["Customer - Reviews"]),
+    ("app.api.v1.customer.dashboard", "/api/v1", ["Customer - Dashboard"]),
+    ("app.api.v1.admin.dashboard", "/api/v1", ["Admin - Dashboard"]),
+    ("app.api.v1.admin.orders", "/api/v1", ["Admin - Orders"]),
+    ("app.api.v1.admin.coupon", "/api/v1", ["Admin - Coupon"]),
+    ("app.api.v1.admin.settings", "/api/v1", ["Admin - Settings"]),
+]
 
-# Checkout
-from app.api.v1.checkout import router as checkout_router
-app.include_router(checkout_router, prefix="/api/v1/checkout", tags=["Checkout"])
-
-# Orders
-from app.api.v1.orders import router as orders_router
-app.include_router(orders_router, prefix="/api/v1/orders", tags=["Orders"])
-
-# Admin - Categories
-from app.api.v1.admin.categories import router as admin_categories_router
-app.include_router(admin_categories_router, prefix="/api/v1/admin/categories", tags=["Admin - Categories"])
-
-# Admin - Brands
-from app.api.v1.admin.brands import router as admin_brands_router
-app.include_router(admin_brands_router, prefix="/api/v1/admin/brands", tags=["Admin - Brands"])
-
-# Admin - Products
-from app.api.v1.admin.products import router as admin_products_router
-app.include_router(admin_products_router, prefix="/api/v1/admin/products", tags=["Admin - Products"])
-
-# Admin - Dashboard
-from app.api.v1.admin.dashboard import router as admin_dashboard_router
-app.include_router(admin_dashboard_router, prefix="/api/v1/admin/dashboard", tags=["Admin - Dashboard"])
-
-# Admin - Orders
-from app.api.v1.admin.orders import router as admin_orders_router
-app.include_router(admin_orders_router, prefix="/api/v1/admin/orders", tags=["Admin - Orders"])
-
-# Admin - Coupons
-from app.api.v1.admin.coupon import router as admin_coupon_router
-app.include_router(admin_coupon_router, prefix="/api/v1/admin/coupon", tags=["Admin - Coupon"])
-
-# Admin - Settings
-from app.api.v1.admin.settings import router as admin_settings_router
-app.include_router(admin_settings_router, prefix="/api/v1/admin/settings", tags=["Admin - Settings"])
-
-# Customer - Addresses
-from app.api.v1.customer.addresses import router as customer_addresses_router
-app.include_router(customer_addresses_router, prefix="/api/v1/customer/addresses", tags=["Customer - Addresses"])
-
-# Customer - Reviews
-from app.api.v1.customer.reviews import router as customer_reviews_router
-app.include_router(customer_reviews_router, prefix="/api/v1/customer/reviews", tags=["Customer - Reviews"])
-
-# Customer - Dashboard
-from app.api.v1.customer.dashboard import router as customer_dashboard_router
-app.include_router(customer_dashboard_router, prefix="/api/v1/customer/dashboard", tags=["Customer - Dashboard"])
-
-# Print registered routes
-print("\n📋 Registered routes:")
-for route in app.routes:
-    if hasattr(route, 'path'):
-        print(f"  {route.path}")
+for module_name, prefix, tags in routers:
+    router = safe_import_router(module_name)
+    if router is not None:
+        app.include_router(router, prefix=prefix, tags=tags)
