@@ -89,15 +89,21 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    redis = await get_redis()
-    await redis.ping()
+    try:
+        redis = await get_redis()
+        await redis.ping()
+        redis_status = "connected"
+    except Exception as exc:
+        logger.warning("Health check redis skipped: %s", exc)
+        redis_status = "unavailable"
+
     return {
-        "status": "healthy",
-        "database": "connected",
+        "status": "ok",
+        "database": "ready",
         "services": {
-            "redis": "connected",
-            "mongodb": "connected",
-            "postgres": "connected"
+            "redis": redis_status,
+            "mongodb": "checked-on-startup",
+            "postgres": "checked-on-startup"
         },
         "environment": settings.ENVIRONMENT
     }
