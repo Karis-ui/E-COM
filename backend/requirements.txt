@@ -21,3 +21,4 @@ starlette==0.37.2
 typing-inspection==0.4.2
 typing_extensions==4.16.0
 uvicorn==0.30.6
+cryptography==41.0.7
