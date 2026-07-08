@@ -38,4 +38,3 @@ export const COUNTIES = () => {
 
 export const WS_BASE_URL = "http://localhost:8000";
 
-export default { COUNTIES, WS_BASE_URL };
