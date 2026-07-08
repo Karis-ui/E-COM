@@ -29,7 +29,6 @@ def safe_import_router(module_name: str):
 async def lifespan(app: FastAPI):
     print(f"🚀 Starting {settings.APP_NAME} v{settings.APP_VERSION}")
     
-    # Database connections...
     try:
         from app.database.postgres import Base, engine
         async with engine.begin() as conn:

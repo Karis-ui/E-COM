@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = "railway"
     
     MONGODB_URI: str = "mongodb+srv://..."
-    MONGODB_DB: str = "electroshop"
+    MONGODB_DB: str = "KTECH"
     
     REDIS_URL: Optional[str] = None
     
