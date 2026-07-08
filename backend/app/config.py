@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     PORT: int = 8000
     ALLOWED_ORIGINS: List[str] = [
         "https://ktech-production.up.railway.app",
-        "https://ktech-industries.up.railway.app/",
+        "https://ktech-industries.up.railway.app",
         "http://localhost:3000",
         "https://*.railway.app"
     ]
