@@ -2,7 +2,7 @@ import redis.asyncio as redis
 from app.config import settings
 import os
 
-REDIS_URL = ("redis://default:Aai5AAIgcDFmMjUxNmZlOGVmMmU0NTU4YTUwNjA1MjljMTBmNTU1Ng@sterling-ant-43193.upstash.io:6379")
+REDIS_URL = os.environ.get("REDIS_URL", settings.REDIS_URL)
 redis_client = None
 
 async def get_redis():
