@@ -95,21 +95,21 @@ print("📦 IMPORTING ROUTERS...")
 print("="*50)
 
 routers = [
-    ("app.api.v1.auth", "/api/v1", ["Authentication"]),
-    ("app.api.v1.products", "/api/v1", ["Products"]),
-    ("app.api.v1.cart", "/api/v1", ["Cart"]),
-    ("app.api.v1.checkout", "/api/v1", ["Checkout"]),
-    ("app.api.v1.orders", "/api/v1", ["Orders"]),
-    ("app.api.v1.customer.addresses", "/api/v1", ["Customer - Addresses"]),
-    ("app.api.v1.customer.reviews", "/api/v1", ["Customer - Reviews"]),
-    ("app.api.v1.customer.dashboard", "/api/v1", ["Customer - Dashboard"]),
-    ("app.api.v1.admin.categories", "/api/v1", ["Admin - Categories"]),
-    ("app.api.v1.admin.brands", "/api/v1", ["Admin - Brands"]),
-    ("app.api.v1.admin.products", "/api/v1", ["Admin - Products"]),
-    ("app.api.v1.admin.dashboard", "/api/v1", ["Admin - Dashboard"]),
-    ("app.api.v1.admin.orders", "/api/v1", ["Admin - Orders"]),
-    ("app.api.v1.admin.coupon", "/api/v1", ["Admin - Coupon"]),
-    ("app.api.v1.admin.settings", "/api/v1", ["Admin - Settings"]),
+    ("app.api.v1.auth", "/api", ["Authentication"]),
+    ("app.api.v1.products", "/api", ["Products"]),
+    ("app.api.v1.cart", "/api", ["Cart"]),
+    ("app.api.v1.checkout", "/api", ["Checkout"]),
+    ("app.api.v1.orders", "/api", ["Orders"]),
+    ("app.api.v1.customer.addresses", "/api", ["Customer - Addresses"]),
+    ("app.api.v1.customer.reviews", "/api", ["Customer - Reviews"]),
+    ("app.api.v1.customer.dashboard", "/api", ["Customer - Dashboard"]),
+    ("app.api.v1.admin.categories", "/api", ["Admin - Categories"]),
+    ("app.api.v1.admin.brands", "/api", ["Admin - Brands"]),
+    ("app.api.v1.admin.products", "/api", ["Admin - Products"]),
+    ("app.api.v1.admin.dashboard", "/api", ["Admin - Dashboard"]),
+    ("app.api.v1.admin.orders", "/api", ["Admin - Orders"]),
+    ("app.api.v1.admin.coupon", "/api", ["Admin - Coupon"]),
+    ("app.api.v1.admin.settings", "/api", ["Admin - Settings"]),
 ]
 
 for module_name, prefix, tags in routers:
