@@ -6,6 +6,7 @@ from app.database.postgres import get_db
 from app.services.settings_service import SettingsService
 from app.core.security import get_current_user
 
+
 router = APIRouter(prefix="/admin/settings", tags=["Admin - Settings"])
 
 class DeliverySettings(BaseModel):

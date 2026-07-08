@@ -18,6 +18,7 @@ from app.core.security import (
 from app.services.otp_services import OTPService
 from app.schemas.user import UserCreate, LoginRequest, TokenResponse
 from app.core.validators import validate_password_strength
+from app.schemas.user import UserResponse
 
 router = APIRouter(prefix='/auth', tags=['Authentication'])
 
