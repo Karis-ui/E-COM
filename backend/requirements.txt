@@ -22,4 +22,4 @@ typing-inspection==0.4.2
 typing_extensions==4.16.0
 uvicorn==0.30.6
 cryptography==41.0.7
-psycopg2==2.9.12
+asyncpg==0.28.0
