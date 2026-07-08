@@ -38,4 +38,3 @@ export const COUNTIES = () => {
 
 export const WS_BASE_URL = "https://ktech-production.up.railway.app/ws";
 
-export default { COUNTIES, WS_BASE_URL };
