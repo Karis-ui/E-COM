@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship
 DATABASE_URL = os.environ.get("DATABASE_URL", settings.DATABASE_URL)
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://")
-print(f"Connecting to PostgreSQL at {DATABASE_URL}")
+print(f"Connecting to PostgreSQL...........")
 
 engine = create_async_engine(
     DATABASE_URL,
