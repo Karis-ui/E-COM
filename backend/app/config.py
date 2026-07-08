@@ -15,7 +15,7 @@ class Settings(BaseSettings):
         "https://ktech-production.up.railway.app",
         "https://ktech-industries.up.railway.app",
         "http://localhost:3000",
-        "https://*.railway.app"
+        "https://localhost:8000",
     ]
     
     DATABASE_URL: Optional[str] = None

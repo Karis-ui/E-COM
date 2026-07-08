@@ -99,6 +99,8 @@ routers = [
     ("app.api.v1.cart", "/api", ["Cart"]),
     ("app.api.v1.checkout", "/api", ["Checkout"]),
     ("app.api.v1.orders", "/api", ["Orders"]),
+    ("app.api.v1.delivery", "/api", ["Delivery"]),
+    ("app.api.v1.payments", "/api", ["Payments"]),
     ("app.api.v1.customer.addresses", "/api", ["Customer - Addresses"]),
     ("app.api.v1.customer.reviews", "/api", ["Customer - Reviews"]),
     ("app.api.v1.customer.dashboard", "/api", ["Customer - Dashboard"]),
